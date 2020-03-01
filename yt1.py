@@ -1,30 +1,33 @@
+
 queue = [i for i in input('Input: ').split(' ')]
 
 
-def decorator(f):
-    max_size = int(input('Cache size: '))
-    cache = {}
+def my_lru_cache(max_size):
+    def extended_cache(f):
+        cache = {}
 
-    def wrapper(*args):
-        # for element in f(cache):
+        def wrapper(*args, **kwargs):
 
-        if args not in cache:
-            cache[args] = f(*args)
-        else:
-            return args
-        if len(cache) > max_size:
-            cache.pop(0)
+            # for element in f(cache):
+            for i in args:
+                if i not in cache:
+                    cache[args] = f(*args)
+                else:
+                    return args
 
-            # f(cache).append(element)
+            if len(cache) > max_size:
+                cache.pop(0)
 
-    return wrapper
+                # f(cache).append(element)
+        return wrapper
+    return extended_cache
 
 
 #    def cache_clear():'
 #        pass
 #    wrapper.cache_clear = cache_clear
 #    return wrapper
-@decorator
+@my_lru_cache(int(input('Cache size: ')))
 def list_input(queue):
     return queue
 
